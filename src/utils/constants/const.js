@@ -80,13 +80,22 @@ const error_message = {
     USER_EXIST: "User already exist!",
     USER_NOT_EXIST: "User not found!",
     INVALID_PASSWORD: "Inavalid password!",
-    INVALID_REFRESH_TOKEN: "Invalid refresh token!"
+    INVALID_REFRESH_TOKEN: "Invalid refresh token!",
+    UNAUTHORIZED: "Unauthorize!",
+    FAILED_TO_UPLOAD: "File upload failed!!",
+    FORBIDDEN: "User don't have a permission to access this endpoint!"
 }
 
 const message = {
     USER_CREATION_SUCCESS: "User created successfully.",
     LOGIN_SUCCEED: "Login succeed!",
-    GET_TOKEN_SUCCEED: "AccessToken fetch succeed."
+    GET_TOKEN_SUCCEED: "AccessToken fetch succeed.",
+    ADDRESS_CREATION_SUCCESS: "Address created successfully.",
+    ADDRESS_FETCH_SUCCEED : "Address fetch succeed.",
+    PRESCRIPTION_CREATION_SUCCESS: "Prescription created successfully.",
+    PRESCRIPTION_FETCH_SUCCEED : "Prescription fetch succeed.",
+    QUOTE_CREATION_SUCCESS: "Quote created successfully.",
+    QUOTE_FETCH_SUCCEED : "Quote fetch succeed.",
 }
 
 module.exports = {

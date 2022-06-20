@@ -29,8 +29,20 @@ const getAddressesBySK = async (SK) => {
     return await dynamoClient.scan(params).promise();
 }
 
+const deleteItemBySK = async (PK, SK) => {
+    var params = {
+        TableName: TABLE_NAME,
+        Key: {
+            PK,
+            SK
+        }
+    };
+    return await dynamoClient.delete(params).promise();
+}
+
 module.exports = {
     create,
     getUserByEmail,
-    getAddressesBySK
+    getAddressesBySK,
+    deleteItemBySK
 }

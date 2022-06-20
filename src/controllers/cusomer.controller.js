@@ -73,3 +73,12 @@ exports.getPrescription = async (req, res, next) => {
         return respondWithError(res, http.StatusInternalServerError, error_message.INTERNAL_ERROR, error);
     }
 }
+
+exports.deletePrescription = async (req, res, next) => {
+    try {
+        
+    }
+    catch (error) {
+        return respondWithError(res, http.StatusInternalServerError, error_message.INTERNAL_ERROR, error);
+    }
+}

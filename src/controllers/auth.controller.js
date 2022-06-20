@@ -85,14 +85,3 @@ exports.refreshToken = (req, res, next) => {
         return respondWithError(res, http.StatusInternalServerError, error_message.INTERNAL_ERROR, error);
     }
 }
-
-exports.test = async (req, res, next) => {
-    try {
-        // const user = await getTestAddressById("USER#01")
-        // const user = await getTestUserById('USER#03')
-        return res.status(200).json(user);
-    }
-    catch (error) {
-        return respondWithError(res, http.StatusInternalServerError, error_message.INTERNAL_ERROR, error);
-    }
-}

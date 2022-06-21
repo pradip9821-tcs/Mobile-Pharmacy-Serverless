@@ -1,7 +1,16 @@
+require('dotenv').config();
 const { dynamoClient } = require('../../services/database');
-const TABLE_NAME = "Demo";
+const TABLE_NAME = process.env.DYNAMODB_TABLE_NAME;
 
 const create = async (data) => {
+    const params = {
+        TableName: TABLE_NAME,
+        Item: data
+    }
+    return await dynamoClient.put(params).promise();
+}
+
+const update = async (data) => {
     const params = {
         TableName: TABLE_NAME,
         Item: data
@@ -19,17 +28,17 @@ const getUserByEmail = async (email) => {
     return await dynamoClient.scan(params).promise();
 }
 
-const getAddressesBySK = async (SK) => {
+const getSelectedAddressesBySK = async (SK) => {
     var params = {
         TableName: TABLE_NAME,
-        FilterExpression: "#SK = :skValue AND begins_with(#PK, :addRelation)",
-        ExpressionAttributeNames: { "#SK": "SK", "#PK": "PK" },
-        ExpressionAttributeValues: { ":skValue": SK, ":addRelation": "ADDRESS#" }
+        FilterExpression: "#SK = :skValue AND begins_with(#PK, :addRelation) AND #is_select = :is_select",
+        ExpressionAttributeNames: { "#SK": "SK", "#PK": "PK", "#is_select": "is_select" },
+        ExpressionAttributeValues: { ":skValue": SK, ":addRelation": "ADDRESS#", ":is_select": 1 }
     };
     return await dynamoClient.scan(params).promise();
 }
 
-const deleteItemBySK = async (PK, SK) => {
+const deleteItemById = async (PK, SK) => {
     var params = {
         TableName: TABLE_NAME,
         Key: {
@@ -42,7 +51,8 @@ const deleteItemBySK = async (PK, SK) => {
 
 module.exports = {
     create,
+    update,
     getUserByEmail,
-    getAddressesBySK,
-    deleteItemBySK
+    deleteItemById,
+    getSelectedAddressesBySK
 }

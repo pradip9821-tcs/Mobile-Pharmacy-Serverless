@@ -7,6 +7,8 @@ router.post('/create-prescription', isAuth, custController.createPrescription);
 
 router.get('/get-prescription', isAuth, custController.getPrescription);
 
-router.delete('/delete-prescription', isAuth, custController.deletePrescription)
+router.delete('/delete-prescription', isAuth, custController.deletePrescription);
+
+router.get('/get-nearby-pharmacy',isAuth, custController.getNearByPharmacy);
 
 module.exports = router;

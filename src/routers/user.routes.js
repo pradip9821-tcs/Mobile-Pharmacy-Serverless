@@ -9,4 +9,6 @@ router.get('/get-address', isAuth, userController.getAddresses);
 
 router.delete('/delete-address', isAuth, userController.deleteAddress);
 
+router.put('/update-address', isAuth, userController.updateAddress);
+
 module.exports = router;

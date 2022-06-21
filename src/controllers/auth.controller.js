@@ -1,6 +1,6 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const { create, getUserByEmail} = require("../utils/dynamo/user.dynamo");
+const { create, getUserByEmail } = require("../utils/dynamo/user.dynamo");
 const { http, error_message, message } = require('../utils/constants/const');
 const { successResponse, respondWithError } = require('../utils/response.helper');
 const { generateId } = require('../utils/helper');
@@ -9,13 +9,32 @@ require('dotenv').config();
 exports.signup = async (req, res, next) => {
     try {
         const payload = {
-            ...req.body,
-            PK: 'USER#' + generateId(5),
-            createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString()
+            name        : req.body.name,
+            email       : req.body.email,
+            password    : req.body.password,
+            role        : parseInt(req.body.role),
+            gender      : req.body.gender,
+            country_code: req.body.country_code,
+            phone       : req.body.phone,
+            store       : req.body.store,
+            PK          : 'USER#' + generateId(5),
+            createdAt   : new Date().toISOString(),
+            updatedAt   : new Date().toISOString()
         };
 
         payload.SK = "-"
+        for (let i = 0; i < req.files.length; i++) {
+            if (req.files[i].mimetype === 'image/png' || req.files[i].mimetype === 'image/jpg' || req.files[i].mimetype === 'image/jpeg') {
+                payload.image = {
+                    name: req.files[i].originalname,
+                    url: req.files[i].path,
+                    type: req.files[i].mimetype
+                };
+            }
+            else {
+                return respondWithError(res, http.StatusBadRequest, error_message.FAILED_TO_UPLOAD, error);
+            }
+        }
 
         if (!payload.email || !payload.password || payload.role === undefined || !payload.image || payload.gender === undefined || !payload.country_code || !payload.phone || !payload.name) {
             return respondWithError(res, http.StatusBadRequest, error_message.INSUFFICIENT_DATA, undefined);

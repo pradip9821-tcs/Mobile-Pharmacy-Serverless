@@ -85,6 +85,7 @@ const error_message = {
     FAILED_TO_UPLOAD: "File upload failed!!",
     FORBIDDEN: "User don't have a permission to access this endpoint!",
     ADDRESS_NOT_EXIST: "Address not found!",
+    PRESCRIPTION_NOT_EXIST: "Prescription not found!",
 }
 
 const message = {
@@ -93,8 +94,9 @@ const message = {
     GET_TOKEN_SUCCEED: "AccessToken fetch succeed.",
     ADDRESS_CREATION_SUCCESS: "Address created successfully.",
     ADDRESS_FETCH_SUCCEED : "Address fetch succeed.",
-    ADDRESS_DETETED_SUCCESS : "Address deleted successfully.",
+    ADDRESS_DELETED_SUCCESS : "Address deleted successfully.",
     PRESCRIPTION_CREATION_SUCCESS: "Prescription created successfully.",
+    PRESCRIPTION_DELETED_SUCCESS: "Prescription deleted successfully.",
     PRESCRIPTION_FETCH_SUCCEED : "Prescription fetch succeed.",
     QUOTE_CREATION_SUCCESS: "Quote created successfully.",
     QUOTE_FETCH_SUCCEED : "Quote fetch succeed.",

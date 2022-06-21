@@ -1,5 +1,6 @@
+require('dotenv').config();
 const { dynamoClient } = require('../../services/database');
-const TABLE_NAME = "Demo";
+const TABLE_NAME = process.env.DYNAMODB_TABLE_NAME;
 
 const getPrescriptionBySK = async (SK, struct) => {
     var params = {

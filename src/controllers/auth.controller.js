@@ -12,7 +12,7 @@ exports.signup = async (req, res, next) => {
             name        : req.body.name,
             email       : req.body.email,
             password    : req.body.password,
-            role        : parseInt(req.body.role),
+            role        : req.body.role,
             gender      : req.body.gender,
             country_code: req.body.country_code,
             phone       : req.body.phone,

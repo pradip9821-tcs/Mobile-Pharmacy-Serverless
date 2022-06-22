@@ -28,6 +28,16 @@ const getUserByEmail = async (email) => {
     return await dynamoClient.scan(params).promise();
 }
 
+const getUserByRole = async (role) => {
+    var params = {
+        TableName: TABLE_NAME,
+        FilterExpression: "#role = :roleValue",
+        ExpressionAttributeNames: { "#role": "role" },
+        ExpressionAttributeValues: { ":roleValue": role }
+    };
+    return await dynamoClient.scan(params).promise();
+}
+
 const getSelectedAddressesBySK = async (SK) => {
     var params = {
         TableName: TABLE_NAME,
@@ -54,5 +64,6 @@ module.exports = {
     update,
     getUserByEmail,
     deleteItemById,
-    getSelectedAddressesBySK
+    getSelectedAddressesBySK,
+    getUserByRole
 }

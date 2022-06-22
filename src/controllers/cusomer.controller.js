@@ -1,6 +1,6 @@
 const { http, error_message, message } = require("../utils/constants/const");
 const { getQuoteByPrescriptionId, getItemById, getPrescriptionBySK } = require("../utils/dynamo/pres.dynamo");
-const { create, deleteItemById, getSelectedAddressesBySK } = require("../utils/dynamo/user.dynamo");
+const { create, deleteItemById, getSelectedAddressesBySK, getUserByRole } = require("../utils/dynamo/user.dynamo");
 const { generateId, clearImage } = require("../utils/helper");
 const { respondWithError, successResponse } = require("../utils/response.helper");
 
@@ -109,14 +109,113 @@ exports.getNearByPharmacy = async (req, res, next) => {
         }
         
         const address   = await getSelectedAddressesBySK(req.user.PK);
-        if(address.Items.length === 0) {
+        if (address.Items.length === 0) {
             return respondWithError(res, http.StatusNotFound, error_message.ADDRESS_NOT_EXIST, undefined);
         }
 
         const user_lat  = address.Items[0].latitude;
         const user_long = address.Items[0].longitude;
 
-        return successResponse(res, http.StatusOK, message.PRESCRIPTION_DELETED_SUCCESS, address);
+        const store     = await getUserByRole('2');
+        const store_ids = store.Items.map(element => element.PK)
+
+        let response    = []; 
+
+        for (let i = 0; i < store_ids.length; i++ ) {
+            const address   = await getSelectedAddressesBySK(store_ids[i]);
+            if (address.Items.length === 0) {
+                continue
+            }
+
+            const store_lat  = address.Items[0].latitude;
+            const store_long = address.Items[0].longitude;
+
+            const R     = 6371;
+
+            const φ1    = (user_lat * Math.PI) / 180;
+            const φ2    = (store_lat * Math.PI) / 180;
+
+            const Δφ    = ((store_lat - user_lat) * Math.PI) / 180;
+            const Δλ    = ((store_long - user_long) * Math.PI) / 180;
+
+            const a     =
+                    Math.sin(Δφ / 2) * Math.sin(Δφ / 2) +
+                    Math.cos(φ1) * Math.cos(φ2) * Math.sin(Δλ / 2) * Math.sin(Δλ / 2);
+            const c     = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+            const d     = R * c;
+
+            if ( d  < 100) { 
+                response.push({
+                    store_name  : store.Items[i].store.store_name,
+                    address     : address.Items[0].primary_address + ', ' + address.Items[0].addition_address_info,
+                    image       : store.Items[i].image,
+                    distance    : Math.round(d * 100) / 100
+                });
+            }
+        }
+
+        return successResponse(res, http.StatusOK, message.PRESCRIPTION_DELETED_SUCCESS, response);
+    }
+    catch (error) {
+        return respondWithError(res, http.StatusInternalServerError, error_message.INTERNAL_ERROR, error);
+    }
+}
+
+exports.getNearByPharmacy = async (req, res, next) => {
+    try {
+        if (req.user.role === '2') {
+            return respondWithError(res, http.StatusForbidden, error_message.FORBIDDEN, undefined);
+        }
+        
+        const address   = await getSelectedAddressesBySK(req.user.PK);
+        if (address.Items.length === 0) {
+            return respondWithError(res, http.StatusNotFound, error_message.ADDRESS_NOT_EXIST, undefined);
+        }
+
+        const user_lat  = address.Items[0].latitude;
+        const user_long = address.Items[0].longitude;
+
+        const store     = await getUserByRole('2');
+        const store_ids = store.Items.map(element => element.PK)
+
+        let response    = []; 
+
+        for (let i = 0; i < store_ids.length; i++ ) {
+            const address   = await getSelectedAddressesBySK(store_ids[i]);
+            if (address.Items.length === 0) {
+                continue
+            }
+
+            const store_lat  = address.Items[0].latitude;
+            const store_long = address.Items[0].longitude;
+
+            const R     = 6371;
+
+            const φ1    = (user_lat * Math.PI) / 180;
+            const φ2    = (store_lat * Math.PI) / 180;
+
+            const Δφ    = ((store_lat - user_lat) * Math.PI) / 180;
+            const Δλ    = ((store_long - user_long) * Math.PI) / 180;
+
+            const a     =
+                    Math.sin(Δφ / 2) * Math.sin(Δφ / 2) +
+                    Math.cos(φ1) * Math.cos(φ2) * Math.sin(Δλ / 2) * Math.sin(Δλ / 2);
+            const c     = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+            const d     = R * c;
+
+            if ( d  < 100) { 
+                response.push({
+                    store_name  : store.Items[i].store.store_name,
+                    address     : address.Items[0].primary_address + ', ' + address.Items[0].addition_address_info,
+                    image       : store.Items[i].image,
+                    distance    : Math.round(d * 100) / 100
+                });
+            }
+        }
+
+        return successResponse(res, http.StatusOK, message.PRESCRIPTION_DELETED_SUCCESS, response);
     }
     catch (error) {
         return respondWithError(res, http.StatusInternalServerError, error_message.INTERNAL_ERROR, error);
